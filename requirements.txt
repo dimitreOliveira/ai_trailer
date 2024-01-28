@@ -1,0 +1,12 @@
+isort
+black
+flake8
+mypy
+pyyaml
+cinemagoer
+TTS
+opencv-python
+numpy
+sentence-transformers
+moviepy
+# ffmpeg # brew install ffmpeg
