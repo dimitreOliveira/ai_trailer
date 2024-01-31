@@ -1,7 +1,12 @@
-FEATURE_NAME := ai_trailer
+IMAGE_NAME := ai_trailer
 TAG ?= latest
 
 trailer:
+	docker run --rm \
+	-v $(PWD)/movies/:/app/movies/ \
+	-v $(PWD)/voices/:/app/voices/ \
+	-v $(PWD)/projects/:/app/projects/ \
+	${IMAGE_NAME}:${TAG} \
 	make plot voice screenshot image_retrieval clip audio_clip join_clip
 
 plot:
@@ -26,7 +31,7 @@ join_clip:
 	python src/join_clip.py
 
 build:
-	pip install -r requirements.txt
+	docker build -t ${IMAGE_NAME}:${TAG} .
 
 lint:
 	isort ./src

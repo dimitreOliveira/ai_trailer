@@ -1,12 +1,7 @@
-isort
-black
-flake8
-mypy
-pyyaml
-cinemagoer
-TTS
-opencv-python
-numpy
-sentence-transformers
-moviepy
-# ffmpeg # brew install ffmpeg
+pyyaml>=6.0.1
+cinemagoer>=2023.5.1
+opencv-python>=4.9.0.80
+numpy>=1.26.3
+sentence-transformers>=2.2.2
+moviepy>=1.0.3
+TTS>=0.22.0

@@ -34,6 +34,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
 logger.info("##### Starting step 2 voice generation #####")
+logger.info(configs["tts_model_id"])
 
 tts = TTS(model_name=configs["tts_model_id"]).to(configs["device"])
 generate_voices(scenes_dir)
