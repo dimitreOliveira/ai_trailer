@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
-from common import SCREENSHOT_DIR, configs, scenes_dir
+from common import FRAME_DIR, configs, scenes_dir
 
 
 def get_image_embeddings(
@@ -97,7 +97,7 @@ logger.info("##### Starting step 4 frame retrieval #####")
 logger.info(f"Loading {configs['similarity_model_id']} as the similarity model")
 model = SentenceTransformer(configs["similarity_model_id"])
 
-img_filepaths = glob(f"{SCREENSHOT_DIR}/*.jpg")
+img_filepaths = glob(f"{FRAME_DIR}/*.jpg")
 logger.info(f"Retrieving from {len(img_filepaths)} images")
 img_emb = get_image_embeddings(model, img_filepaths, configs["similarity_batch_size"])
 

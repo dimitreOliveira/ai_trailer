@@ -27,11 +27,11 @@ def get_audio_clips(
             audio_clips_dir.mkdir(parents=True, exist_ok=True)
 
         for audio_path in glob(f"{audios_dir}/*.wav"):
-            audio_name = audio_path.split("/")[-1].split(".")[0]
+            audio_name = Path(audio_path).stem
             audio = AudioFileClip(audio_path)
 
             for clip_path in glob(f"{clips_dir}/*{audio_name}.mp4"):
-                clip_name = clip_path.split("/")[-1].split(".")[0]
+                clip_name = Path(clip_path).stem
                 clip = VideoFileClip(clip_path)
 
                 mixed_audio = CompositeAudioClip(

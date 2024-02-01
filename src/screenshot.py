@@ -3,19 +3,19 @@ from pathlib import Path
 
 import cv2
 
-from common import SCREENSHOT_DIR, configs
+from common import FRAME_DIR, configs
 
 
-def create_screeshots(movie_path: str, n_screenshot: int, screenshot_dir: Path) -> None:
-    """Take multiple screenshots from a video file.
+def create_screeshots(movie_path: str, n_frames: int, frame_dir: Path) -> None:
+    """Take multiple frames from a video file.
 
     Args:
         movie_path (str): Path to the movie file
-        n_screenshot (int): Number of screenshots that will be taken
-        screenshot_dir (Path): Directory to save the screenshots
+        n_frames (int): Number of frames that will be taken
+        frame_dir (Path): Directory to save the frames
     """
-    if not screenshot_dir.exists():
-        screenshot_dir.mkdir(parents=True, exist_ok=True)
+    if not frame_dir.exists():
+        frame_dir.mkdir(parents=True, exist_ok=True)
 
     cam = cv2.VideoCapture(movie_path)
 
@@ -27,8 +27,8 @@ def create_screeshots(movie_path: str, n_screenshot: int, screenshot_dir: Path) 
         ret, frame = cam.read()
         if ret:
             img_name = f"frame_{currentframe}.jpg"
-            if currentframe % (total_frames // n_screenshot) == 0:
-                cv2.imwrite(f"{screenshot_dir}/{img_name}", frame)
+            if currentframe % (total_frames // n_frames) == 0:
+                cv2.imwrite(f"{frame_dir}/{img_name}", frame)
             currentframe += 1
         else:
             break
@@ -42,4 +42,4 @@ logger = logging.getLogger(__file__)
 
 logger.info("##### Starting step 3 frame sampling #####")
 
-create_screeshots(configs["movie_path"], configs["n_screenshot"], SCREENSHOT_DIR)
+create_screeshots(configs["movie_path"], configs["n_frames"], FRAME_DIR)

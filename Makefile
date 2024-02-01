@@ -7,7 +7,7 @@ trailer:
 	-v $(PWD)/voices/:/app/voices/ \
 	-v $(PWD)/projects/:/app/projects/ \
 	${IMAGE_NAME}:${TAG} \
-	make plot voice screenshot image_retrieval clip audio_clip join_clip
+	make plot voice frame image_retrieval clip audio_clip join_clip
 
 plot:
 	python src/plot.py
@@ -15,8 +15,8 @@ plot:
 voice:
 	python src/voice.py
 
-screenshot:
-	python src/screenshot.py
+frame:
+	python src/frame.py
 
 image_retrieval:
 	python src/image_retrieval.py

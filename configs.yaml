@@ -1,17 +1,17 @@
-project_dir: '{PROJECT_NAME}'
+movie_path: 'movies/night_of_the_living_dead.mp4'
+movie_id: '0063350'
+reference_voice_path: './voices/sample_voice.wav'
+project_name: night_of_the_living_dead
 project_dir: './projects'
-movie_path: './movies/{PATH_TO_VIDEO_FILE}.mp4'
 plot_filename: 'plot.txt'
-movie_id: '0063350' # ID for Night of the living dead
-device: cpu # usually one of (cpu, cuda, mps)
+device: cpu
 tts_model_id: 'tts_models/multilingual/multi-dataset/xtts_v2'
 tts_language: en
-reference_void_path: './voices/{PATH_TO_REFERENCE_VOICE_FILE}.wav'
 n_audios: 1
-n_screenshot: 1000
+n_frames: 1000
 similarity_model_id: 'clip-ViT-B-32'
 n_retrieved_images: 1
 similarity_batch_size: 128
 min_clip_len: 5
-clip_volume: 0.5 # 50% of the original clip volume
-voice_volume: 1.0 # 100% of the generated voice volume
+clip_volume: 0.5
+voice_volume: 1.0

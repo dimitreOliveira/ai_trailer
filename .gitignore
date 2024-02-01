@@ -1,5 +1,5 @@
 .DS_Store
 .venvs/
+__pycache__/
 movies
-voices
 projects

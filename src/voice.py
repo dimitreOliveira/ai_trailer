@@ -24,7 +24,7 @@ def generate_voices(scenes_dir: list[str]) -> None:
             logger.info(f"Generating audio {idx+1}")
             tts.tts_to_file(
                 scene_plot,
-                speaker_wav=configs["reference_void_path"],
+                speaker_wav=configs["reference_voice_path"],
                 language=configs["tts_language"],
                 file_path=f"{audio_dir}/audio_{idx+1}.wav",
             )
