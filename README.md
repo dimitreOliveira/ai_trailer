@@ -36,7 +36,7 @@ Any movie's URL at IMDB will look like this "https://www.imdb.com/title/tt006335
 5. **Clip:** Create a video clip for each of the frames selected
 6. **Audio clip:** Add the voice generated at step 2 to each corresponding clip
 7. **Join clip:** Join all the audio clips to build the trailer
-    
+
 
 ## Configs
 ```

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import cv2
 
-from common import FRAME_DIR, configs
+from common import FRAMES_DIR, configs
 
 
 def create_screeshots(movie_path: str, n_frames: int, frame_dir: Path) -> None:
@@ -42,4 +42,4 @@ logger = logging.getLogger(__file__)
 
 logger.info("##### Starting step 3 frame sampling #####")
 
-create_screeshots(configs["movie_path"], configs["n_frames"], FRAME_DIR)
+create_screeshots(configs["movie_path"], configs["n_frames"], FRAMES_DIR)

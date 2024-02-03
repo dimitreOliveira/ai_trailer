@@ -20,7 +20,7 @@ def get_clip(movie: VideoFileClip, scenes_dir: list[str], min_clip_len: int) -> 
     fps = movie.fps
 
     for idx, scene_dir in enumerate(scenes_dir):
-        logger.info(f'Generating clips for scene {idx+1}')
+        logger.info(f"Generating clips for scene {idx+1}")
         clip_dir = Path(f"{scene_dir}/clips")
         audio_filepaths = glob(f"{scene_dir}/audios/*.wav")
         frame_paths = glob(f"{scene_dir}/frames/*.jpg")
