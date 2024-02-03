@@ -4,14 +4,14 @@
 
 ---
 
-The idea of this repository is to automatically generate a number of trailer candidates for a given movie, the user only needs to provide the movie file and a cuple of text parameters, and everyhing else is taken care.
+The idea of this repository is to automatically generate a number of trailer candidates for a given movie, the user only needs to provide the movie file and a couple of text parameters, and everything else is taken care.
 
 ### How does it works?
-First we take the movie's plot at IMDB and split it into subplots, they will roughly describe the main parts of the movie, next we generate a voice for each subplot. Now that we have the spoken part of the trailer we just need to take short clips corresponding to apply the voice over them, we do this by sampling many frames from the movie, and taking some of the most simialr frames to each subplot, with this we have the images that best represents each subplot, the next step would be to take a clip of a few secons starting from each frame. After genrating the audio and visual part of the trailer we just need to combine each audi with the corresponding clip and finally join all cips together into the final trailer.
+First, we take the movie's plot at IMDB and split it into subplots, they will roughly describe the main parts of the movie, and next, we generate a voice for each subplot. Now that we have the spoken part of the trailer we just need to take short clips corresponding to apply the voice over them, we do this by sampling many frames from the movie and taking some of the most similar frames to each subplot, with this we have the images that best represent each subplot, the next step would be to take a clip of a few seconds starting from each frame. After generating the audio and visual part of the trailer we just need to combine each audio with the corresponding clip and finally join all clips together into the final trailer.
 
-All of those steps will generate intermediate files that you can inspect and mannualy remove what you don't like to improve the results.
+All of those steps will generate intermediate files that you can inspect and manually remove what you don't like to improve the results.
 
-> Note: with the default parameters, for each subplot only one audio and one clip will be generate thus creating only one trailer candidate. If you wish to create more trailer candidates or have more options of audios and clip to choose from, you can increase `n_audios` and `n_retrieved_images`, just keep in mind that the trailer candidates increase geometically with this, for `n_audios = 3` and `n_retrieved_images = 3` you will have 9 (3**3) trailer candidates at the end.
+> Note: with the default parameters, for each subplot only one audio and one clip will be generated thus creating only one trailer candidate. If you wish to create more trailer candidates or have more options of audios and clips to choose from, you can increase `n_audios` and `n_retrieved_images`, just keep in mind that the trailer candidates increase geometrically with this, for `n_audios = 3` and `n_retrieved_images = 3` you will have 9 (3**3) trailer candidates at the end.
 
 # Examples
 ### Night of the Living Dead (1968)
@@ -23,19 +23,19 @@ All of those steps will generate intermediate files that you can inspect and man
 The recommended approach to use this repository is with [Docker](https://docs.docker.com/), but you can also use a custom venv, just make sure to install all dependencies.
 
 **The user only needs to provide two inputs**, the movie file and the IMDB ID from that movie.
-After that you can go to the `configs.yaml` file and ajust the values accordingly, `movie_id` will be the IMDB ID and `movie_path` should point to the movie's file, you might also want to update `project_name` to your movie's name and provide a reference voice with `reference_voice_path`.
+After that you can go to the `configs.yaml` file and adjust the values accordingly, `movie_id` will be the IMDB ID, and `movie_path` should point to the movie's file, you might also want to update `project_name` to your movie's name and provide a reference voice with `reference_voice_path`.
 
-## How the get the IMDB ID for a movie?
-Any movie's url at IMDB will look like this "https://www.imdb.com/title/tt0063350" the ID will be the **integer part** after `title/`, in this case for "Night of the Living Dead" it would be `0063350`.
+## How to get the IMDB ID for a movie?
+Any movie's URL at IMDB will look like this "https://www.imdb.com/title/tt0063350", the ID will be the **integer part** after `title/`, in this case for "Night of the Living Dead" it would be `0063350`.
 
 ## Application workflow
-    1 - Plot: Get the movie's plot from IMDB and split it into subplots
-    2 - Voice: Generate a voice for each subplot
-    3 - Frame sampling: Sample multiple frames from the movie
-    4 - Frame ranking: Select the frames most similar to each subplot
-    5 - Clip: Create a video clip for each of the frames selected
-    6 - Audio clip: Add the voice generate at step 2 to each corresponding clip
-    7 - Join clip: Join all the audio clips to build the trailer
+1. **Plot:** Get the movie's plot from IMDB and split it into subplots
+2. **Voice:** Generate a voice for each subplot
+3. **Frame sampling:** Sample multiple frames from the movie
+4. **Frame ranking:** Select the frames most similar to each subplot
+5. **Clip:** Create a video clip for each of the frames selected
+6. **Audio clip:** Add the voice generated at step 2 to each corresponding clip
+7. **Join clip:** Join all the audio clips to build the trailer
     
 
 ## Configs
@@ -72,7 +72,7 @@ voice_volume: 1.0
 - **similarity_model_id**: Similarity model used to rank the frames
 - **n_retrieved_images**: Number of retrieved frames per subplot
 - **similarity_batch_size**: Batch size used by the similarity model to embed the frames
-- **min_clip_len**: Minimun lenght of a clip
+- **min_clip_len**: Minimum length of a clip
 - **clip_volume**: Percentage of the original clip volume to be kept for the final clip
 - **voice_volume**: Percentage of the generated voice volume to be kept for the final clip
 
