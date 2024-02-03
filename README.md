@@ -1,6 +1,6 @@
 # Automatic trailer generation using AI
 
-{image}
+![](./assets/ai_trailer.jpg)
 
 ---
 
@@ -15,9 +15,10 @@ All of those steps will generate intermediate files that you can inspect and man
 
 # Examples
 ### Night of the Living Dead (1968)
-{TODO}
+[![Watch the video](https://i.ytimg.com/vi/qNt4fQlEHPA/hqdefault.jpg)](https://youtu.be/qNt4fQlEHPA)
+
 ### Nosferatu (1922)
-{TODO}
+[![Watch the video](https://i.ytimg.com/vi/bfUdjzndOyI/hqdefault.jpg)](https://youtu.be/bfUdjzndOyI)
 
 # Usage
 The recommended approach to use this repository is with [Docker](https://docs.docker.com/), but you can also use a custom venv, just make sure to install all dependencies.
