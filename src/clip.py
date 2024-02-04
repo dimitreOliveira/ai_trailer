@@ -54,6 +54,5 @@ logger = logging.getLogger(__file__)
 logger.info("##### Starting step 5 clip creation #####")
 
 movie = VideoFileClip(configs["movie_path"], audio=True)
-print(movie.fps)
 
 get_clip(movie, scenes_dir, configs["min_clip_len"])
