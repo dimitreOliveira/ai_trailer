@@ -4,6 +4,10 @@
 
 ---
 
+### I have written a blog post describing this project in more detail, make sure to check "[Creating Movie Trailers With AI](https://medium.com/towards-artificial-intelligence/creating-movie-trailers-with-ai-bb5c3d89f4e3)" to learn more!
+
+---
+
 The idea of this repository is to automatically generate a number of trailer candidates for a given movie, the user only needs to provide the movie file and a couple of text parameters, and everything else is taken care.
 
 ### How does it works?
