@@ -1,58 +1,59 @@
 import logging
 import math
-from glob import glob
-from pathlib import Path
+import shutil
 
 import librosa
 from moviepy.editor import VideoFileClip
 
-from common import configs, scenes_dir
+from common import SCENES_DIR, configs
 
 
-def get_clip(movie: VideoFileClip, scenes_dir: list[str], min_clip_len: int) -> None:
+def get_clip(video: VideoFileClip, min_clip_len: int) -> None:
     """Create video clips based on individual frames
 
     Args:
-        movie (VideoFileClip): Movie file source for the clips
-        scenes_dir (list[str]): Directories for each scence
+        video (VideoFileClip): Video file source for the clips
         min_clip_len (int): Minimum clip length
     """
-    fps = movie.fps
+    fps = video.fps
 
-    for idx, scene_dir in enumerate(scenes_dir):
+    for idx, scene_dir in enumerate(SCENES_DIR):
         logger.info(f"Generating clips for scene {idx+1}")
-        clip_dir = Path(f"{scene_dir}/clips")
-        audio_filepaths = glob(f"{scene_dir}/audios/*.wav")
-        frame_paths = glob(f"{scene_dir}/frames/*.jpg")
+        clip_dir = scene_dir / "clips"
+        audio_filepaths = scene_dir.glob("audios/*.wav")
+        frame_paths = scene_dir.glob("frames/*.jpg")
 
-        if not clip_dir.exists():
-            clip_dir.mkdir(parents=True, exist_ok=True)
+        if clip_dir.exists():
+            shutil.rmtree(clip_dir)
+
+        clip_dir.mkdir(parents=True, exist_ok=True)
 
         for audio_filepath in audio_filepaths:
-            audio_filename = audio_filepath.split("/")[-1].split(".")[0]
+            audio_filename = audio_filepath.stem
             audio_duration = math.ceil(librosa.get_duration(path=audio_filepath))
             audio_duration = max(min_clip_len, audio_duration)
 
             for frame_path in frame_paths:
-                frame = int(frame_path.split("/")[-1].split(".")[0].split("_")[-1])
+                frame = int(frame_path.stem.split("_")[-1])
 
                 clip_start = frame // fps
-                clip_end = clip_start + audio_duration
+                clip_end = min((clip_start + audio_duration), video.duration)
 
-                clip = movie.subclip(clip_start, clip_end)
+                clip = video.subclip(clip_start, clip_end)
+
                 clip.write_videofile(
                     f"{clip_dir}/clip_{frame}_{audio_filename}.mp4",
                     verbose=False,
                     logger=None,
                 )
-                clip.close()
+                # clip.close() # Sometimes the clip is closed before it finished writing
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
-logger.info("##### Starting step 5 clip creation #####")
+logger.info("\n##### Starting step 5 clip creation #####\n")
 
-movie = VideoFileClip(configs["movie_path"], audio=True)
+video = VideoFileClip(configs["video_path"], audio=True)
 
-get_clip(movie, scenes_dir, configs["min_clip_len"])
+get_clip(video, configs["clip"]["min_clip_len"])

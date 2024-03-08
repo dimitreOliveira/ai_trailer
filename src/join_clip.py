@@ -1,11 +1,11 @@
 import itertools
 import logging
-from glob import glob
+import shutil
 from pathlib import Path
 
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 
-from common import TRAILER_DIR, scenes_dir
+from common import SCENES_DIR, TRAILER_DIR
 
 
 def join_clips(clip_combinations: list[tuple[str]], trailer_dir: Path) -> None:
@@ -17,8 +17,8 @@ def join_clips(clip_combinations: list[tuple[str]], trailer_dir: Path) -> None:
     """
     for idx, clip_combination in enumerate(clip_combinations):
         logger.info(f"Generating trailer {idx+1}")
-        trailer_path = Path(f"{trailer_dir}/trailer_{idx+1}.mp4")
-        clips = [VideoFileClip(clip_path) for clip_path in clip_combination]
+        trailer_path = trailer_dir / f"trailer_{idx+1}.mp4"
+        clips = [VideoFileClip(str(clip_path)) for clip_path in clip_combination]
         trailer = concatenate_videoclips(clips)
         trailer.write_videofile(str(trailer_path))
 
@@ -26,12 +26,14 @@ def join_clips(clip_combinations: list[tuple[str]], trailer_dir: Path) -> None:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
-logger.info("##### Starting step 7 trailer creation #####")
+logger.info("\n##### Starting step 7 trailer creation #####\n")
 
-if not TRAILER_DIR.exists():
-    TRAILER_DIR.mkdir(parents=True, exist_ok=True)
+if TRAILER_DIR.exists():
+    shutil.rmtree(TRAILER_DIR)
 
-audio_clips = [glob(f"{scene}/audio_clips/*.mp4") for scene in scenes_dir]
+TRAILER_DIR.mkdir(parents=True, exist_ok=True)
+
+audio_clips = [list(scene_dir.glob("audio_clips/*.mp4")) for scene_dir in SCENES_DIR]
 audio_clip_combinations = list(itertools.product(*audio_clips))
 
 join_clips(audio_clip_combinations, TRAILER_DIR)

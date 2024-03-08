@@ -1,23 +1,24 @@
 import logging
-from pathlib import Path
+import shutil
 
 import cv2
 
 from common import FRAMES_DIR, configs
 
 
-def create_screeshots(movie_path: str, n_frames: int, frame_dir: Path) -> None:
+def create_screeshots(video_path: str, n_frames: int) -> None:
     """Take multiple frames from a video file.
 
     Args:
-        movie_path (str): Path to the movie file
+        video_path (str): Path to the video file
         n_frames (int): Number of frames that will be taken
-        frame_dir (Path): Directory to save the frames
     """
-    if not frame_dir.exists():
-        frame_dir.mkdir(parents=True, exist_ok=True)
+    if FRAMES_DIR.exists():
+        shutil.rmtree(FRAMES_DIR)
 
-    cam = cv2.VideoCapture(movie_path)
+    FRAMES_DIR.mkdir(parents=True, exist_ok=True)
+
+    cam = cv2.VideoCapture(video_path)
 
     total_frames = int(cam.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -26,9 +27,9 @@ def create_screeshots(movie_path: str, n_frames: int, frame_dir: Path) -> None:
     while True:
         ret, frame = cam.read()
         if ret:
-            img_name = f"frame_{currentframe}.jpg"
+            img_path = FRAMES_DIR / f"frame_{currentframe}.jpg"
             if currentframe % (total_frames // n_frames) == 0:
-                cv2.imwrite(f"{frame_dir}/{img_name}", frame)
+                cv2.imwrite(str(img_path), frame)
             currentframe += 1
         else:
             break
@@ -40,6 +41,6 @@ def create_screeshots(movie_path: str, n_frames: int, frame_dir: Path) -> None:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
-logger.info("##### Starting step 3 frame sampling #####")
+logger.info("\n##### Starting step 3 frame sampling #####\n")
 
-create_screeshots(configs["movie_path"], configs["n_frames"], FRAMES_DIR)
+create_screeshots(configs["video_path"], configs["frame_sampling"]["n_frames"])

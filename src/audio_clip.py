@@ -1,38 +1,36 @@
 import logging
-from glob import glob
-from pathlib import Path
+import shutil
 
 from moviepy.editor import AudioFileClip, CompositeAudioClip, VideoFileClip
 
-from common import configs, scenes_dir
+from common import SCENES_DIR, configs
 
 
-def get_audio_clips(
-    scenes_dir: list[str], clip_volume: float, voice_volume: float
-) -> None:
+def get_audio_clips(clip_volume: float, voice_volume: float) -> None:
     """Add generated voice to each clip.
 
     Args:
-        scenes_dir (list[str]): Directories for each scence
         clip_volume (float): Volume of the original clip used for the audio clip
         voice_volume (float): Volume of the generated voice used for the audio clip
     """
-    for idx, scene in enumerate(scenes_dir):
+    for idx, scene_dir in enumerate(SCENES_DIR):
         logger.info(f'Generating audio clips for scene "{idx+1}"')
-        clips_dir = Path(f"{scene}/clips")
-        audios_dir = Path(f"{scene}/audios")
-        audio_clips_dir = Path(f"{scene}/audio_clips")
+        clips_dir = scene_dir / "clips"
+        audios_dir = scene_dir / "audios"
+        audio_clips_dir = scene_dir / "audio_clips"
 
-        if not audio_clips_dir.exists():
-            audio_clips_dir.mkdir(parents=True, exist_ok=True)
+        if audio_clips_dir.exists():
+            shutil.rmtree(audio_clips_dir)
 
-        for audio_path in glob(f"{audios_dir}/*.wav"):
-            audio_name = Path(audio_path).stem
-            audio = AudioFileClip(audio_path)
+        audio_clips_dir.mkdir(parents=True, exist_ok=True)
 
-            for clip_path in glob(f"{clips_dir}/*{audio_name}.mp4"):
-                clip_name = Path(clip_path).stem
-                clip = VideoFileClip(clip_path)
+        for audio_path in audios_dir.glob("*.wav"):
+            audio_name = audio_path.stem
+            audio = AudioFileClip(str(audio_path))
+
+            for clip_path in clips_dir.glob(f"*{audio_name}.mp4"):
+                clip_name = clip_path.stem
+                clip = VideoFileClip(str(clip_path))
 
                 mixed_audio = CompositeAudioClip(
                     [
@@ -50,6 +48,9 @@ def get_audio_clips(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
-logger.info("##### Starting step 6 audio clip creation #####")
+logger.info("\n##### Starting step 6 audio clip creation #####\n")
 
-get_audio_clips(scenes_dir, configs["clip_volume"], configs["voice_volume"])
+get_audio_clips(
+    configs["audio_clip"]["clip_volume"],
+    configs["audio_clip"]["voice_volume"],
+)

@@ -8,10 +8,10 @@
 
 ---
 
-The idea of this repository is to automatically generate a number of trailer candidates for a given movie, the user only needs to provide the movie file and a couple of text parameters, and everything else is taken care.
+The idea of this repository is to automatically generate a number of trailer candidates for a given video, the user only needs to provide the video file and a couple of text parameters, and everything else is taken care.
 
 ### How does it works?
-First, we take the movie's plot at IMDB and split it into subplots, they will roughly describe the main parts of the movie, and next, we generate a voice for each subplot. Now that we have the spoken part of the trailer we just need to take short clips corresponding to each subplot and apply the voice over them, we do this by sampling many frames from the movie and taking some of the most similar frames to each subplot, with this we have the images that best represent each subplot, the next step would be to take a clip of a few seconds starting from each frame. After generating the audio and visual part of the trailer we just need to combine each audio with the corresponding clip and finally join all clips together into the final trailer.
+First, we optionally take the video's plot at IMDB and split it into subplots, instead of taking at from IMDB you could also provide your own plot or modify it, those subplots will roughly describe the main parts of the video, and next, we generate a voice for each subplot. Now that we have the spoken part of the trailer we just need to take short clips corresponding to each subplot and apply the voice over them, we do this by sampling many frames from the video and taking some of the most similar frames to each subplot, with this we have the images that best represent each subplot, the next step would be to take a clip of a few seconds starting from each frame. After generating the audio and visual part of the trailer we just need to combine each audio with the corresponding clip and finally join all clips together into the final trailer.
 
 All of those steps will generate intermediate files that you can inspect and manually remove what you don't like to improve the results.
 
@@ -24,62 +24,90 @@ All of those steps will generate intermediate files that you can inspect and man
 ### Nosferatu (1922)
 [![Watch the video](https://i.ytimg.com/vi/bfUdjzndOyI/hqdefault.jpg)](https://youtu.be/bfUdjzndOyI)
 
+# Changelog
+- 2024/03/03 - Added support to create trailers for any video not only movies.
+- 2024/03/07 - Added support to download videos from YouTube.
+
 # Usage
 The recommended approach to use this repository is with [Docker](https://docs.docker.com/), but you can also use a custom venv, just make sure to install all dependencies.
 
-**The user only needs to provide two inputs**, the movie file and the IMDB ID from that movie.
-After that you can go to the `configs.yaml` file and adjust the values accordingly, `movie_id` will be the IMDB ID, and `movie_path` should point to the movie's file, you might also want to update `project_name` to your movie's name and provide a reference voice with `reference_voice_path`.
+**The user only needs to provide two inputs**, the video file and the IMDB ID from that video.
+After that you can go to the `configs.yaml` file and adjust the values accordingly, `video_id` will be the IMDB ID, and `video_path` should point to the video's file, you might also want to update `project_name` to your video's name and provide a reference voice with `reference_voice_path`.
 
-## How to get the IMDB ID for a movie?
-Any movie's URL at IMDB will look like this "https://www.imdb.com/title/tt0063350", the ID will be the **integer part** after `title/`, in this case for "Night of the Living Dead" it would be `0063350`.
+## How to get the IMDB ID for a video?
+Any movie's URL at IMDB will look like this "https://www.imdb.com/title/tt0063350", the ID will be the **integer part** after `title/`, in this case for "Night of the Living Dead" it would be `0063350`, IMDB mainly has movie's informations but you can also find series' episodes and other videos.
 
 ## Application workflow
-1. **Plot:** Get the movie's plot from IMDB and split it into subplots
-2. **Voice:** Generate a voice for each subplot
-3. **Frame sampling:** Sample multiple frames from the movie
-4. **Frame ranking:** Select the frames most similar to each subplot
-5. **Clip:** Create a video clip for each of the frames selected
-6. **Audio clip:** Add the voice generated at step 2 to each corresponding clip
-7. **Join clip:** Join all the audio clips to build the trailer
-
+1. **Video retrieval (optional):** Download the video from YouTube
+2. **Plot retrieval (optional):** Get the video's plot from IMDB
+3. **Subplots:** Split the plot into subplots
+4. **Voice:** Generate a voice for each subplot
+5. **Frame sampling:** Sample multiple frames from the video
+6. **Frame ranking:** Select the frames most similar to each subplot
+7. **Clip:** Create a video clip for each of the frames selected
+8. **Audio clip:** Add the voice generated at step 2 to each corresponding clip
+9. **Join clip:** Join all the audio clips to build the trailer
 
 ## Configs
 ```
-project_name: night_of_the_living_dead
-project_dir: './projects'
-movie_path: 'movies/night_of_the_living_dead.mp4'
+project_dir: 'projects'
+project_name: American_Museum_of_Natural_History
+video_path: 'movies/American_Museum_of_Natural_History.mp4'
 plot_filename: 'plot.txt'
-movie_id: '0063350'
-device: cpu
-tts_model_id: 'tts_models/multilingual/multi-dataset/xtts_v2'
-tts_language: en
-reference_voice_path: './voices/the_narrator.wav'
-n_audios: 1
-n_frames: 1000
-similarity_model_id: 'clip-ViT-B-32'
-n_retrieved_images: 1
-similarity_batch_size: 128
-min_clip_len: 5
-clip_volume: 0.5
-voice_volume: 1.0
+video_retrieval:
+  video_url: 'https://www.youtube.com/watch?v=UxJJiO6zNSo'
+plot_retrieval:
+  video_id: 
+subplot:
+  split_char:
+voice:
+  model_id: 'tts_models/multilingual/multi-dataset/xtts_v2'
+  device: cpu
+  reference_voice_path: 'voices/sample_voice.wav'
+  tts_language: en
+  n_audios: 1
+frame_sampling:
+  n_frames: 1000
+frame_ranking:
+  model_id: 'clip-ViT-B-32'
+  device: cpu
+  n_retrieved_images: 1
+  similarity_batch_size: 128
+clip:
+  min_clip_len: 5
+audio_clip:
+  clip_volume: 0.5
+  voice_volume: 1.0
 ```
-- **project_name**: Project name and main folder, it can be any name that you want
+
 - **project_dir**: Folder that will host all your projects
-- **movie_path**: Path to the movie file
-- **plot_filename**: File name that will keep the movie plot
-- **movie_id**: IMDB ID for the movie
-- **device**: Devices used by the TTS and similarity models, usually one of (cpu, cuda, mps)
-- **tts_model_id**: TTS mode ID, here I am using [Coqui AI](https://github.com/coqui-ai/TTS?tab=readme-ov-file#running-a-multi-speaker-and-multi-lingual-model)
-- **tts_language**: Language input for the TTS model
-- **reference_voice_path**: Path to the reference audio file (voice that will be cloned)
-- **n_audios**: Number of audios to generate per subplot
-- **n_frames**: Number of frames to sample from the movie
-- **similarity_model_id**: Similarity model used to rank the frames
-- **n_retrieved_images**: Number of retrieved frames per subplot
-- **similarity_batch_size**: Batch size used by the similarity model to embed the frames
-- **min_clip_len**: Minimum length of a clip
-- **clip_volume**: Percentage of the original clip volume to be kept for the final clip
-- **voice_volume**: Percentage of the generated voice volume to be kept for the final clip
+- **project_name**: Project name and main folder, it can be any name that you want
+- **video_path**: Path to the video file
+- **plot_filename**: File name that will keep the video plot
+- **video_retrieval**:
+    - **video_url**: Optional URL from a YouTube video
+- **plot_retrieval**:
+    - **video_id**: Optional IMDB ID for the video
+- **subplot**:
+    - **split_char**: Optional character used to split the plot text
+- **voice**:
+    - **model_id**: TTS mode ID, here I am using [Coqui AI](https://github.com/coqui-ai/TTS?tab=readme-ov-file#running-a-multi-speaker-and-multi-lingual-model)
+    - **device**: Devices used by the TTS and similarity models, usually one of (cpu, cuda, mps)
+    - **reference_voice_path**: Path to the reference audio file (voice that will be cloned)
+    - **tts_language**: Language input for the TTS model
+    - **n_audios**: Number of audios to generate per subplot
+- **frame_sampling**:
+    - **n_frames**: Number of frames to sample from the video
+- **frame_ranking**:
+    - **model_id**: Similarity model used to rank the frames
+    - **device**: Devices used by the TTS and similarity models, usually one of (cpu, cuda, mps)
+    - **n_retrieved_images**: Number of retrieved frames per subplot
+    - **similarity_batch_size**: Batch size used by the similarity model to embed the frames
+- **clip**:
+    - **min_clip_len**: Minimum length of a clip
+- **audio_clip**:
+    - **clip_volume**: Percentage of the original clip volume to be kept for the final clip
+    - **voice_volume**: Percentage of the generated voice volume to be kept for the final clip
 
 ## Commands
 Build the Docker image
@@ -87,14 +115,34 @@ Build the Docker image
 make build
 ```
 
-Run the whole pipeline to create the trailer
+Run the whole pipeline to create the trailer, retrieving the plot from IMDB
 ```bash
-make trailer
+make trailer_imdb
 ```
 
-Run the plot step
+Run the whole pipeline to create the trailer, downloading the video from YouTube
 ```bash
-make plot
+make trailer_youtube
+```
+
+Run the whole pipeline to create the trailer, downloading the video from YouTube and retrieving the plot from IMDB
+```bash
+make trailer_imdb_youtube
+```
+
+Run the video retrieval step
+```bash
+make video_retrieval
+```
+
+Run the plot retrieval step
+```bash
+make plot_retrieval
+```
+
+Run the subplot step
+```bash
+make subplot
 ```
 
 Run the voice step

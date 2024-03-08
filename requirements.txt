@@ -5,3 +5,4 @@ numpy>=1.26.3
 sentence-transformers>=2.2.2
 moviepy>=1.0.3
 TTS>=0.22.0
+pytube>=15.0.0

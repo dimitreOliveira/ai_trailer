@@ -1,14 +1,32 @@
 IMAGE_NAME := ai_trailer
 TAG ?= latest
 
-trailer:
-	make plot voice frame image_retrieval clip audio_clip join_clip
+trailer_imdb:
+	make plot_retrieval subplot voice frame image_retrieval clip audio_clip join_clip
 
-plot:
+trailer_youtube:
+	make video_retrieval subplot voice frame image_retrieval clip audio_clip join_clip
+
+trailer_imdb_youtube:
+	make video_retrieval plot_retrieval subplot voice frame image_retrieval clip audio_clip join_clip
+
+video_retrieval:
+	docker run --rm \
+	-v $(PWD)/movies/:/app/movies/ \
+	${IMAGE_NAME}:${TAG} \
+	python src/video.py
+
+plot_retrieval:
 	docker run --rm \
 	-v $(PWD)/projects/:/app/projects/ \
 	${IMAGE_NAME}:${TAG} \
-	python src/plot.py
+	python src/plot_retrieval.py
+
+subplot:
+	docker run --rm \
+	-v $(PWD)/projects/:/app/projects/ \
+	${IMAGE_NAME}:${TAG} \
+	python src/subplot.py
 
 voice:
 	docker run --rm \

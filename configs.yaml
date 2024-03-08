@@ -1,17 +1,28 @@
-movie_path: 'movies/night_of_the_living_dead.mp4'
-movie_id: '0063350'
-reference_voice_path: './voices/sample_voice.wav'
-project_name: night_of_the_living_dead
-project_dir: './projects'
+project_dir: 'projects'
+project_name: American_Museum_of_Natural_History
+video_path: 'movies/American_Museum_of_Natural_History.mp4'
 plot_filename: 'plot.txt'
-device: cpu
-tts_model_id: 'tts_models/multilingual/multi-dataset/xtts_v2'
-tts_language: en
-n_audios: 1
-n_frames: 1000
-similarity_model_id: 'clip-ViT-B-32'
-n_retrieved_images: 1
-similarity_batch_size: 128
-min_clip_len: 5
-clip_volume: 0.5
-voice_volume: 1.0
+video_retrieval:
+  video_url: 'https://www.youtube.com/watch?v=UxJJiO6zNSo'
+plot_retrieval:
+  video_id: 
+subplot:
+  split_char:
+voice:
+  model_id: 'tts_models/multilingual/multi-dataset/xtts_v2'
+  device: cpu
+  reference_voice_path: 'voices/sample_voice.wav'
+  tts_language: en
+  n_audios: 1
+frame_sampling:
+  n_frames: 1000
+frame_ranking:
+  model_id: 'clip-ViT-B-32'
+  device: cpu
+  n_retrieved_images: 1
+  similarity_batch_size: 128
+clip:
+  min_clip_len: 5
+audio_clip:
+  clip_volume: 0.5
+  voice_volume: 1.0

@@ -1,17 +1,16 @@
 import logging
 import shutil
-from glob import glob
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 
-from common import FRAMES_DIR, configs, scenes_dir
+from common import FRAMES_DIR, SCENES_DIR, configs
 
 
 def get_image_embeddings(
-    model: SentenceTransformer, img_filepaths: list[str], batch_size: int
+    model: SentenceTransformer, img_filepaths: list[Path], batch_size: int
 ) -> np.ndarray:
     """Create embeddings from a set of images.
 
@@ -33,8 +32,7 @@ def get_image_embeddings(
 
 
 def retrieve_frames(
-    scenes_dir: list[str],
-    img_filepaths: list[str],
+    img_filepaths: list[Path],
     model: SentenceTransformer,
     img_emb: np.ndarray,
     top_k: int,
@@ -42,28 +40,29 @@ def retrieve_frames(
     """Retrieve the `top_k` most similar frame images to a subplot text.
 
     Args:
-        scenes_dir (list[str]): Directories for each scence
         img_filepaths (list[str]): File paths for all images
         model (SentenceTransformer): Similarity model used to measure similarity
         img_emb (np.ndarray): Image embeddings used as the retrieval source
         top_k (int): Number of images to be retrieved
     """
-    for idx, scene_dir in enumerate(scenes_dir):
+    for idx, scene_dir in enumerate(SCENES_DIR):
         logger.info(f"Retrieving images for scene {idx+1}")
-        plot_path = Path(f"{scene_dir}/plot.txt")
-        frames_dir = Path(f"{scene_dir}/frames")
+        plot_path = scene_dir / "subplot.txt"
+        scene_frames_dir = scene_dir / "frames"
 
-        if not frames_dir.exists():
-            frames_dir.mkdir(parents=True, exist_ok=True)
+        if scene_frames_dir.exists():
+            shutil.rmtree(scene_frames_dir)
+
+        scene_frames_dir.mkdir(parents=True, exist_ok=True)
 
         plot = plot_path.read_text()
         hits = search(plot, model, img_emb, top_k=top_k)
 
         for hit in hits:
             img_filepath = img_filepaths[hit["corpus_id"]]
-            img_name = img_filepath.split("/")[-1]
+            img_name = img_filepath.name
 
-            shutil.copyfile(img_filepath, f"{frames_dir}/{img_name}")
+            shutil.copyfile(img_filepath, f"{scene_frames_dir}/{img_name}")
 
 
 def search(
@@ -92,15 +91,19 @@ def search(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
-logger.info("##### Starting step 4 frame retrieval #####")
+logger.info("\n##### Starting step 4 frame retrieval #####\n")
 
-logger.info(f"Loading {configs['similarity_model_id']} as the similarity model")
-model = SentenceTransformer(configs["similarity_model_id"])
+logger.info(f"Loading {configs['frame_ranking']['model_id']} as the similarity model")
+model = SentenceTransformer(
+    configs["frame_ranking"]["model_id"], device=configs["frame_ranking"]["device"]
+)
 
-img_filepaths = glob(f"{FRAMES_DIR}/*.jpg")
+img_filepaths = list(FRAMES_DIR.glob("*.jpg"))
 logger.info(f"Retrieving from {len(img_filepaths)} images")
-img_emb = get_image_embeddings(model, img_filepaths, configs["similarity_batch_size"])
+img_emb = get_image_embeddings(
+    model, img_filepaths, configs["frame_ranking"]["similarity_batch_size"]
+)
 
 retrieve_frames(
-    scenes_dir, img_filepaths, model, img_emb, configs["n_retrieved_images"]
+    img_filepaths, model, img_emb, configs["frame_ranking"]["n_retrieved_images"]
 )
