@@ -24,6 +24,12 @@ All of those steps will generate intermediate files that you can inspect and man
 ### Nosferatu (1922)
 [![Watch the video](https://i.ytimg.com/vi/bfUdjzndOyI/hqdefault.jpg)](https://youtu.be/bfUdjzndOyI)
 
+### The Fermi Paradox — Where Are All The Aliens?
+[![Watch the video](https://i.ytimg.com/vi/Ay0mKR6_WBE/maxresdefault.jpg)](https://youtu.be/Ay0mKR6_WBE)
+
+### Natural History Museum (New Dinosaur Exhibit) Walking Tour in 4K -- Washington, D.C.
+[![Watch the video](https://i.ytimg.com/vi/vQk5vEl2PXY/maxresdefault.jpg)](https://youtu.be/vQk5vEl2PXY)
+
 # Changelog
 - 2024/03/03 - Added support to create trailers for any video not only movies.
 - 2024/03/07 - Added support to download videos from YouTube.
@@ -40,8 +46,8 @@ Any movie's URL at IMDB will look like this "https://www.imdb.com/title/tt006335
 ## Application workflow
 1. **Video retrieval (optional):** Download the video from YouTube
 2. **Plot retrieval (optional):** Get the video's plot from IMDB
-3. **Subplots:** Split the plot into subplots
-4. **Voice:** Generate a voice for each subplot
+3. **Subplot split:** Split the plot into subplots
+4. **Voice generation:** Generate a voice for each subplot
 5. **Frame sampling:** Sample multiple frames from the video
 6. **Frame ranking:** Select the frames most similar to each subplot
 7. **Clip:** Create a video clip for each of the frames selected
@@ -51,11 +57,11 @@ Any movie's URL at IMDB will look like this "https://www.imdb.com/title/tt006335
 ## Configs
 ```
 project_dir: 'projects'
-project_name: American_Museum_of_Natural_History
-video_path: 'movies/American_Museum_of_Natural_History.mp4'
+project_name: Natural_History_Museum
+video_path: 'movies/Natural_History_Museum.mp4'
 plot_filename: 'plot.txt'
 video_retrieval:
-  video_url: 'https://www.youtube.com/watch?v=UxJJiO6zNSo'
+  video_url: 'https://www.youtube.com/watch?v=fdcEKPS6tOQ'
 plot_retrieval:
   video_id: 
 subplot:
@@ -67,16 +73,16 @@ voice:
   tts_language: en
   n_audios: 1
 frame_sampling:
-  n_frames: 1000
+  n_frames: 500
 frame_ranking:
   model_id: 'clip-ViT-B-32'
   device: cpu
   n_retrieved_images: 1
   similarity_batch_size: 128
 clip:
-  min_clip_len: 5
+  min_clip_len: 3
 audio_clip:
-  clip_volume: 0.5
+  clip_volume: 0.1
   voice_volume: 1.0
 ```
 
@@ -115,17 +121,22 @@ Build the Docker image
 make build
 ```
 
-Run the whole pipeline to create the trailer, retrieving the plot from IMDB
+Run the whole pipeline to create the trailer starting from a video and a plot
+```bash
+make trailer
+```
+
+Run the whole pipeline to create the trailer starting from a video and retrieving the plot from IMDB
 ```bash
 make trailer_imdb
 ```
 
-Run the whole pipeline to create the trailer, downloading the video from YouTube
+Run the whole pipeline to create the trailer starting from a plot and downloading the video from YouTube
 ```bash
 make trailer_youtube
 ```
 
-Run the whole pipeline to create the trailer, downloading the video from YouTube and retrieving the plot from IMDB
+Run the whole pipeline to create the trailer downloading the video from YouTube and retrieving the plot from IMDB
 ```bash
 make trailer_imdb_youtube
 ```

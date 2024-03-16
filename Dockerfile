@@ -14,11 +14,12 @@ RUN apt update && \
 # ---------------------------------------------------------------
 
 WORKDIR /app
-COPY ["requirements.txt", "configs.yaml", "Makefile", "./"]
+COPY ["requirements.txt", "Makefile", "./"]
 RUN pip install -r requirements.txt
+COPY configs.yaml .
 COPY src/ src/
 
 # ---------------------------------------------------------------
 # `TTS` prompts the user to accept terms, here I donwload a model and agree with them
 RUN yes | python -c "from TTS.api import TTS; TTS(model_name='tts_models/multilingual/multi-dataset/xtts_v2')"
-# --------------------------------------------------------------- 
+# ---------------------------------------------------------------
