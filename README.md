@@ -4,7 +4,9 @@
 
 ---
 
-### I have written a blog post describing this project in more detail, make sure to check "[Creating Movie Trailers With AI](https://medium.com/towards-artificial-intelligence/creating-movie-trailers-with-ai-bb5c3d89f4e3)" to learn more!
+### I have written a couple of blog post related to this project make sure to check them
+- [Creating Movie Trailers With AI](https://medium.com/towards-artificial-intelligence/creating-movie-trailers-with-ai-bb5c3d89f4e3) describes the project in more details
+- [Using Gemini 1.5 Pro to create video trailers](https://dimitreoliveira.medium.com/using-gemini-1-5-pro-to-create-video-trailers-1fff6fc768c8) explores the usage of Gemini 1.5 Pro video capabilities on this same project
 
 ---
 
