@@ -8,6 +8,12 @@
 - [Creating Movie Trailers With AI](https://medium.com/towards-artificial-intelligence/creating-movie-trailers-with-ai-bb5c3d89f4e3) describes the project in more details
 - [Using Gemini 1.5 Pro to create video trailers](https://dimitreoliveira.medium.com/using-gemini-1-5-pro-to-create-video-trailers-1fff6fc768c8) explores the usage of Gemini 1.5 Pro video capabilities on this same project
 
+### I also adapted this project for the ["Google - Gemini Long Context"](https://www.kaggle.com/competitions/gemini-long-context/overview) Kaggle competition, if you wanna take a look at the content, checkout the links below
+- [Summarized walkthrough video](https://www.youtube.com/watch?v=nNEhd0N0udY)
+- [Complete walkthrough video](https://www.youtube.com/watch?v=HQ3mNmefuS8)
+- [Kaggle notebook](https://www.kaggle.com/code/dimitreoliveira/ai-trailer-using-gemini-to-create-video-trailers/notebook)
+- [Google Colab notebook](https://colab.research.google.com/drive/1qDfR53BjuX2t_DICnc6mVgnOuUJEsgZY?usp=sharing)
+
 ---
 
 The idea of this repository is to automatically generate a number of trailer candidates for a given video, the user only needs to provide the video file and a couple of text parameters, and everything else is taken care.
